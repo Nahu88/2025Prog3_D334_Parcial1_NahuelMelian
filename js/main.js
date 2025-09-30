@@ -153,12 +153,13 @@ function eliminarProducto(index){
   actualizarCarrito()
 }
 
+
+// PUNTO 6 CON EL LOCAL STORAGE
 // Guardar carrito en localStorage y volver a cargarlo si ya existía.
 
 function actualizarCarrito() {
     localStorage.setItem("carrito", JSON.stringify(carrito));
 }
-
 
 function cargarCarrito() {
     let data = localStorage.getItem("carrito");
@@ -167,25 +168,39 @@ function cargarCarrito() {
         mostrarCarrito();
     }
 }
-//// Calcula cuántos productos hay en total y cuánto dinero suman.
-// Se muestra en el header y en la parte inferior del carrito.
+
+
+// PUNTO 7 
+//// Calcula cuántos productos hay en total y cuanta plata suman entre ellos.
+
 
 function actualizarContadorYTotal() {
-    let totalProductos = carrito.reduce((acc, f) => acc + f.cantidad, 0);
-    let totalPrecio = carrito.reduce((acc, f) => acc + f.precio * f.cantidad, 0);
+
+    let totalProductos = 0;
+    let totalPrecio = 0;
+
+    // voy acumnulando la cantidad de productos y el precio total haciendo la cuenta de precio * cantidad
+    carrito.forEach(fruta => {
+        totalProductos += fruta.cantidad;
+        totalPrecio += fruta.precio * fruta.cantidad;
+    });
+
     contadorCarrito.innerText = `Carrito: ${totalProductos} productos`;
     totalCarrito.innerText = `Total: $${totalPrecio}`;
 }
 
 
+
+// PUNTO 8 ORDENAR 
 // Botones que permiten ordenar los productos:
-// uno por nombre alfabéticamente y otro por precio ascendente.
+// uno por nombre y el otro de menor a mayor por precio.
 
 
 botonOrdenarNombre.addEventListener("click", () => {
     let ordenados = [...frutasTienda].sort((a,b) => a.nombre.localeCompare(b.nombre));
     mostrarLista(ordenados);
 });
+
 botonOrdenarPrecio.addEventListener("click", () => {
     let ordenados = [...frutasTienda].sort((a,b) => a.precio - b.precio);
     mostrarLista(ordenados);
@@ -193,13 +208,19 @@ botonOrdenarPrecio.addEventListener("click", () => {
 
 
 
-// Vacía todo el carrito y actualiza en pantalla y en localStorage.
+
+// PUNTO 9 VACIAR EL CARRITO
+// Vacía todo el carrito y actualiza en pantalla y en local storage.
 
 function vaciarCarrito() {
     carrito = [];
     mostrarCarrito();
     actualizarCarrito();
 }
+
+
+
+
 
 function init() {
     imprimirDatosAlumno();
