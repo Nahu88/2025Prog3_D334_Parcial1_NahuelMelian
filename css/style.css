@@ -1,0 +1,31 @@
+.card-producto img {
+    width: 100px;
+}
+
+.card-producto {
+    border: 2px solid;
+    padding: 5px;
+    width: 200px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    margin: 10px;
+}
+
+#contenedor-productos {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+#contenedor-carrito {
+    margin-top: 20px;
+}
+
+.bloque-item {
+    display: flex;
+    justify-content: space-between;
+    border: 1px solid;
+    padding: 5px;
+    margin: 5px 0;
+}
