@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tienda de Frutas</title>
+    <script defer src="main.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div>
+            <label for="barra-busqueda">Filtrar frutas</label>
+            <input type="text" id="barra-busqueda">
+        </div>
+        <div id="datos-alumno"></div>
+        <nav></nav>
+        <div id="contador-carrito">Carrito: 0 productos</div>
+    </header>
+
+    <main>
+        <h2>Productos 
+            <button id="ordenar-nombre">Ordenar por nombre</button>
+            <button id="ordenar-precio">Ordenar por precio</button>
+        </h2>
+
+        <section id="contenedor-productos"></section>
+        <hr>
+        <section id="contenedor-carrito"></section>
+        <div id="total-carrito"></div>
+    </main>
+
+    <footer></footer>
+</body>
+</html>
