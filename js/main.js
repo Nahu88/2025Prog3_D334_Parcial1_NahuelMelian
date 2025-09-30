@@ -46,6 +46,10 @@ const contenedorCarrito = document.getElementById("contenedor-carrito");
 
 
 // Ver despues los de contador
+const contadorCarrito = document.getElementById("contador-carrito");
+const totalCarrito = document.getElementById("total-carrito");
+
+
 
 //Botones del ordenamiento
 const botonOrdenarNombre = document.getElementById("ordenar-nombre");
@@ -67,7 +71,7 @@ function mostrarLista(array){
       <img src="${fruta.ruta_img}" alt="${fruta.nombre}">
       <h3>${fruta.nombre}</h3>
       <p>$${fruta.precio}</p>
-      <button>Agregar al carrito</button>
+      <button onclick="agregarACarrito(${fruta.id})">Agregar al carrito</button>
     </div>
     `
   });
@@ -76,9 +80,130 @@ function mostrarLista(array){
 }
 
 
-function init(){
-  imprimirDatosAlumno();
-  mostrarLista(frutasTienda)
+
+
+// PUNTO 4
+// FILTRO DE PRODUCTOS
+// Funcion de filtro: al escribir en la barra de búsqueda
+// se muestran solo las frutas cuyo nombre incluya el texto ingresado.
+
+
+barraBusqueda.addEventListener("input", filtrarProducto);
+
+// Problema al buscar anana , tambien busca banana
+function filtrarProducto() {
+
+    let valor = barraBusqueda.value.toLowerCase();
+    // Filtramos el array de frutas con filter y includes.
+    let filtrados = frutasTienda.filter(fruta => fruta.nombre.toLowerCase().includes(valor));
+    mostrarLista(filtrados);
 }
 
+
+// PUNTO 5
+// Agrega una fruta al carrito.
+// Si ya está en el carrito, se aumenta la cantidad.
+// Si no está, se pone con la de cantidad = 1.
+
+
+function agregarACarrito(idFruta){
+
+  // busca la fruta en la tienda
+  let fruta = frutasTienda.find(fruta => fruta.id == idFruta);
+
+  // Esto va para el contador
+  let enCarrito = carrito.find(fruta => fruta.id == idFruta);
+
+
+  // Si devuelve el objeto entero entonces incrementa si no hace el push
+  if (enCarrito !== undefined) {
+    enCarrito.cantidad++;
+  } else {
+      carrito.push({...fruta, cantidad:1});
+  }
+
+  mostrarCarrito();
+
+  // Guardar estos cambios en el local storage
+  actualizarCarrito();
+
+}
+
+function mostrarCarrito(){
+  let html = "<ul>";
+  carrito.forEach((fruta, index) => {
+    html += `
+    <li class="bloque-item">
+      <p class="nombre-item">${fruta.nombre} - ${fruta.precio} x ${fruta.cantidad}</p>
+      <button onclick="eliminarProducto(${index})">Eliminar</button>
+    </li>`;
+  });
+  html += `</ul>
+  <button onclick="vaciarCarrito()">Vaciar carrito</button>`;
+
+  contenedorCarrito.innerHTML = html;
+  actualizarContadorYTotal();
+}
+
+
+function eliminarProducto(index){
+
+  carrito.splice(index, 1);
+  mostrarCarrito();
+  actualizarCarrito()
+}
+
+// Guardar carrito en localStorage y volver a cargarlo si ya existía.
+
+function actualizarCarrito() {
+    localStorage.setItem("carrito", JSON.stringify(carrito));
+}
+
+
+function cargarCarrito() {
+    let data = localStorage.getItem("carrito");
+    if (data) {
+        carrito = JSON.parse(data);
+        mostrarCarrito();
+    }
+}
+//// Calcula cuántos productos hay en total y cuánto dinero suman.
+// Se muestra en el header y en la parte inferior del carrito.
+
+function actualizarContadorYTotal() {
+    let totalProductos = carrito.reduce((acc, f) => acc + f.cantidad, 0);
+    let totalPrecio = carrito.reduce((acc, f) => acc + f.precio * f.cantidad, 0);
+    contadorCarrito.innerText = `Carrito: ${totalProductos} productos`;
+    totalCarrito.innerText = `Total: $${totalPrecio}`;
+}
+
+
+// Botones que permiten ordenar los productos:
+// uno por nombre alfabéticamente y otro por precio ascendente.
+
+
+botonOrdenarNombre.addEventListener("click", () => {
+    let ordenados = [...frutasTienda].sort((a,b) => a.nombre.localeCompare(b.nombre));
+    mostrarLista(ordenados);
+});
+botonOrdenarPrecio.addEventListener("click", () => {
+    let ordenados = [...frutasTienda].sort((a,b) => a.precio - b.precio);
+    mostrarLista(ordenados);
+});
+
+
+
+// Vacía todo el carrito y actualiza en pantalla y en localStorage.
+
+function vaciarCarrito() {
+    carrito = [];
+    mostrarCarrito();
+    actualizarCarrito();
+}
+
+function init() {
+    imprimirDatosAlumno();
+    mostrarLista(frutasTienda);
+    cargarCarrito();
+}
 init();
